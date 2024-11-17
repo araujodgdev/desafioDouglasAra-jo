@@ -1,0 +1,11 @@
+services:
+  backend:
+    container_name: app_backend
+    build: ./backend
+    working_dir: /app-backend
+    ports:
+      - 8080:8080
+    volumes:
+      - ./backend:/app-backend
+    environment:
+      - PORT=8080
