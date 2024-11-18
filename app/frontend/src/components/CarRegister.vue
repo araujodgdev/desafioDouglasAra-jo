@@ -1,38 +1,42 @@
 <template>
-    <div>
+    <v-container>
       <h1>Cadastrar Carro</h1>
-      <form @submit.prevent="registerCar">
-        <div>
-          <label>Fabricante:</label>
-          <input v-model="car.manufacturer" required />
-        </div>
-        <div>
-          <label>Modelo:</label>
-          <input v-model="car.model" required />
-        </div>
-        <div>
-          <label>Ano:</label>
-          <input type="number" v-model.number="car.modelYear" required />
-        </div>
-        <div>
-          <label>Categoria:</label>
-          <select v-model="car.category" required>
-            <option
-              v-for="category in categories"
-              :key="category.value"
-              :value="category.value"
-            >
-              {{ category.text }}
-            </option>
-          </select>
-        </div>
-        <button type="submit">Cadastrar Carro</button>
-      </form>
-    </div>
+      <v-form ref="form" v-model="valid" lazy-validation>
+        <v-text-field
+          v-model="car.manufacturer"
+          :rules="[rules.required]"
+          label="Fabricante"
+          required
+        ></v-text-field>
+        <v-text-field
+          v-model="car.model"
+          :rules="[rules.required]"
+          label="Modelo"
+          required
+        ></v-text-field>
+        <v-text-field
+          v-model.number="car.modelYear"
+          :rules="[rules.required, rules.year]"
+          label="Ano"
+          type="number"
+          required
+        ></v-text-field>
+        <v-select
+          v-model="car.category"
+          :items="categories"
+          item-text="text"
+          item-value="value"
+          :rules="[rules.required]"
+          label="Categoria"
+          required
+        ></v-select>
+        <v-btn :disabled="!valid" color="primary" @click="registerCar">Cadastrar Carro</v-btn>
+      </v-form>
+    </v-container>
   </template>
   
   <script lang="ts">
-  import { defineComponent } from 'vue';
+  import { defineComponent, ref } from 'vue';
   import axios from 'axios';
   
   interface Car {
@@ -64,13 +68,22 @@
           { value: 4, text: 'Van' },
           { value: 5, text: 'Pickup' },
         ] as Category[],
+        valid: false,
+        rules: {
+          required: (value: any) => !!value || 'Campo obrigatório',
+          year: (value: number) =>
+            (value && value > 1900 && value <= new Date().getFullYear()) ||
+            'Ano inválido',
+        },
       };
     },
     methods: {
       registerCar() {
-        axios.post('/api/cars', this.car).then(() => {
-          this.$router.push('/');
-        });
+        if ((this.$refs.form as any).validate()) {
+          axios.post('/api/cars', this.car).then(() => {
+            this.$router.push('/');
+          });
+        }
       },
     },
   });

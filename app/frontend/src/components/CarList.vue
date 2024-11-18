@@ -1,38 +1,32 @@
 <template>
   <div>
-    <h1>Lista de Carros</h1>
-    <select v-model="selectedCategory" @change="fetchCars">
-      <option value="">Todas as Categorias</option>
-      <option
-        v-for="category in categories"
-        :key="category.value"
-        :value="category.value"
+    <v-container>
+      <v-row>
+        <v-col cols="12">
+          <h1>Lista de Carros</h1>
+          <v-select
+            v-model="selectedCategory"
+            :items="categories"
+            item-text="text"
+            item-value="value"
+            label="Filtrar por Categoria"
+            @change="fetchCars"
+          ></v-select>
+        </v-col>
+      </v-row>
+
+      <v-data-table
+        :headers="headers"
+        :items="cars"
+        class="elevation-1"
       >
-        {{ category.text }}
-      </option>
-    </select>
-    <table>
-      <thead>
-        <tr>
-          <th>Fabricante</th>
-          <th>Modelo</th>
-          <th>Ano</th>
-          <th>Categoria</th>
-          <th>Ação</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="car in cars" :key="car.id">
-          <td>{{ car.manufacturer }}</td>
-          <td>{{ car.model }}</td>
-          <td>{{ car.modelYear }}</td>
-          <td>{{ getCategoryText(car.category) }}</td>
-          <td>
-            <button @click="removeCar(car.id)">Remover</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+        <template #item.actions="{ item }">
+          <v-btn icon @click="removeCar(item.id)">
+            <v-icon color="red">mdi-delete</v-icon>
+          </v-btn>
+        </template>
+      </v-data-table>
+    </v-container>
   </div>
 </template>
 
@@ -60,12 +54,20 @@ export default defineComponent({
       cars: [] as Car[],
       selectedCategory: '',
       categories: [
+        { value: '', text: 'Todas as Categorias' },
         { value: 1, text: 'Compact Hatch' },
         { value: 2, text: 'Medium Hatch' },
         { value: 3, text: 'Sedan' },
         { value: 4, text: 'Van' },
         { value: 5, text: 'Pickup' },
       ] as Category[],
+      headers: [
+        { text: 'Fabricante', value: 'manufacturer' },
+        { text: 'Modelo', value: 'model' },
+        { text: 'Ano', value: 'modelYear' },
+        { text: 'Categoria', value: 'categoryText' },
+        { text: 'Ações', value: 'actions', sortable: false },
+      ],
     };
   },
   methods: {
@@ -75,7 +77,10 @@ export default defineComponent({
         url += `?category=${this.selectedCategory}`;
       }
       axios.get(url).then((response) => {
-        this.cars = response.data;
+        this.cars = response.data.map((car: Car) => ({
+          ...car,
+          categoryText: this.getCategoryText(car.category),
+        }));
       });
     },
     removeCar(id: number) {
