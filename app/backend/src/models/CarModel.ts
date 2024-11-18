@@ -25,6 +25,17 @@ class CarModel implements ICarModel {
         }
     }
 
+    async getCars(): Promise<SelectCar[]> {
+        try {
+            const db = await PrismaClientSingleton.getInstance().$connect().then(() => PrismaClientSingleton.getInstance());
+            const cars = await db.car.findMany();
+            db.$disconnect();
+            return cars;
+        } catch (e: any) {
+            return e.message;
+        }
+    }
+
 }
 
 export { CarModel };
