@@ -36,6 +36,18 @@ class CarModel implements ICarModel {
         }
     }
 
+    async removeCar(id: string): Promise<string> {
+        try {
+            const db = await PrismaClientSingleton.getInstance().$connect().then(() => PrismaClientSingleton.getInstance());
+            await db.car.delete({
+                where: { id: Number(id) }
+            });
+            db.$disconnect();
+            return 'DELETED';
+        } catch (e: any) {
+            return e.message;
+        }
+    }
 }
 
 export { CarModel };
