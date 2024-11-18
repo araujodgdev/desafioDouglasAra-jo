@@ -23,6 +23,21 @@ class CarService implements ICarService {
             };
         }
     }
+
+    public async getCars(): Promise<ServiceResponse<SelectCar[]>> {
+        try {
+            const cars = await this.carModel.getCars();
+            return {
+                data: cars as SelectCar[],
+                status: "SUCCESSFUL"
+            };
+        } catch (e) {
+            return {
+                data: {message: e as string},
+                status: "NOT_FOUND"
+            };
+        }
+    }
 }
 
 export { CarService };
