@@ -18,6 +18,15 @@ class CarController implements ICarController {
             return res.status(500).json({ message: error.message });
         }
     }
+
+    public async getCars(req: Request, res: Response): Promise<Response> {
+        try {
+            const { data, status } = await this.carService.getCars();
+            return res.status(mapStatusHTTP(status)).json(data);
+        } catch (error: any) {
+            return res.status(500).json({ message: error.message });
+        }
+    }
 }
 
 export { CarController };
