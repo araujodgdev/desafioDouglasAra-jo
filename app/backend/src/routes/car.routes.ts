@@ -23,4 +23,11 @@ carRouter.get(
   }
 );
 
+carRouter.delete(
+  "/:id", 
+  (req: Request, res: Response): void => {
+    carController.removeCar(req, res);
+  }
+);
+
 export { carRouter };
