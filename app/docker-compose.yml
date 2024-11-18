@@ -9,3 +9,28 @@ services:
       - ./backend:/app-backend
     environment:
       - PORT=8080
+      - DATABASE_URL=postgresql://app:app@app_db:5432/app
+    depends_on:
+      - db
+    networks:
+      - default
+  db:
+    container_name: app_db
+    image: 'bitnami/postgresql:latest'
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=app
+      - POSTGRES_PASSWORD=app
+      - POSTGRES_DB=app
+    networks:
+      - default
+    volumes:
+      - db_data:/bitnami/postgresql
+
+volumes:
+  db_data: {}
+
+networks:
+  default:
+    driver: bridge
