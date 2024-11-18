@@ -1,5 +1,5 @@
 import ICarModel, { InsertCar, SelectCar } from "../interfaces/car/ICarModel.js";
-import { PrismaClientSingleton } from "../utils/PrismaClient.js";
+import { PrismaClientSingleton } from "../db/PrismaClient.js";
 import { Prisma } from "@prisma/client";
 
 class CarModel implements ICarModel {
@@ -14,14 +14,14 @@ class CarModel implements ICarModel {
             })
             db.$disconnect();
             return newCar;
-        } catch (e) {
+        } catch (e: any) {
             if (e instanceof Prisma.PrismaClientKnownRequestError) {
                 switch (e.code) {
                     case 'P2002':
                         return 'Error: There is a unique constraint violation';
                 }
             }
-            return 'Error: An unexpected error occurred';
+            return e.message;
         }
     }
 

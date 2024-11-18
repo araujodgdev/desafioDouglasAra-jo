@@ -1,11 +1,12 @@
-import express from 'express';
+import express, { Router } from 'express';
 
 class App {
     public app: express.Express;
 
-    constructor() {
+    constructor(router: Router) {
         this.app = express();
         this.config();
+        this.app.use(router);
     }
 
     private config():void {

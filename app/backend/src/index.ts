@@ -1,11 +1,6 @@
 import { App } from "./app.js";
+import { router } from "./routes/index.js";
 
-const app = new App();
-
-app.app.get('/', (req, res) => {
-    res.send({
-        message: 'Hello World!'
-    });
-});
+const app = new App(router);
 
 app.start(Number(process.env.PORT) || 3000);
