@@ -30,4 +30,11 @@ carRouter.delete(
   }
 );
 
+carRouter.get(
+  "/category/:category", 
+  (req: Request, res: Response): void => {
+    carController.getCarsByCategory(req, res);
+  }
+);
+
 export { carRouter };
