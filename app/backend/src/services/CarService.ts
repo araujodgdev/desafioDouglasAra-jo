@@ -1,3 +1,4 @@
+import { CarCategory } from "@prisma/client";
 import ICarModel, { InsertCar, SelectCar } from "../interfaces/car/ICarModel.js";
 import ICarService from "../interfaces/car/ICarService.js";
 import { ServiceResponse } from "../interfaces/ServiceResponse.js";
@@ -28,6 +29,21 @@ class CarService implements ICarService {
     public async getCars(): Promise<ServiceResponse<SelectCar[]>> {
         try {
             const cars = await this.carModel.getCars();
+            return {
+                data: cars as SelectCar[],
+                status: "SUCCESSFUL"
+            };
+        } catch (e) {
+            return {
+                data: {message: e as string},
+                status: "NOT_FOUND"
+            };
+        }
+    }
+
+    public async getCarsByCategory(category: CarCategory): Promise<ServiceResponse<SelectCar[]>> {
+        try {
+            const cars = await this.carModel.getCarsByCategory(category);
             return {
                 data: cars as SelectCar[],
                 status: "SUCCESSFUL"

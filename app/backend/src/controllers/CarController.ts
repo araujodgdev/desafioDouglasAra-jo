@@ -30,6 +30,16 @@ class CarController implements ICarController {
         }
     }
 
+    public async getCarsByCategory(req: Request, res: Response): Promise<Response> {
+        try {
+            const category = mapCarCategory(Number(req.params.category));
+            const { data, status } = await this.carService.getCarsByCategory(category);
+            return res.status(mapStatusHTTP(status)).json(data);
+        } catch (error: any) {
+            return res.status(500).json({ message: error.message });
+        }
+    }
+
     public async removeCar(req: Request, res: Response): Promise<Response> {
         try {
             const { data, status } = await this.carService.removeCar(req.params.id);
