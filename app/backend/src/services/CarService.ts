@@ -38,6 +38,27 @@ class CarService implements ICarService {
             };
         }
     }
+
+    public async removeCar(id: string): Promise<ServiceResponse<string>> {
+        try {
+            const result = await this.carModel.removeCar(id);
+            if (result === 'NOT_FOUND') {
+                return {
+                    data: {message: result},
+                    status: "NOT_FOUND"
+                };
+            }
+            return {
+                data: result,
+                status: "SUCCESSFUL"
+            };
+        } catch (e) {
+            return {
+                data: {message: e as string},
+                status: "NOT_FOUND"
+            };
+        }
+    }
 }
 
 export { CarService };
