@@ -16,4 +16,11 @@ carRouter.post(
   }
 );
 
+carRouter.get(
+  "/", 
+  (req: Request, res: Response): void => {
+    carController.getCars(req, res);
+  }
+);
+
 export { carRouter };
