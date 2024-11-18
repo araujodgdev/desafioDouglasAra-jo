@@ -4,5 +4,5 @@ export type InsertCar = Omit<Car, "id">;
 export type SelectCar = Car;
 
 export default interface ICarModel {
-    registerCar(car: InsertCar): Promise<SelectCar | any>;
+    registerCar(car: InsertCar): Promise<SelectCar | string>;
 }

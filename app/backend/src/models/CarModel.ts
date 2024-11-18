@@ -1,4 +1,4 @@
-import ICarModel, { InsertCar, SelectCar } from "../interfaces/ICarModel.js";
+import ICarModel, { InsertCar, SelectCar } from "../interfaces/car/ICarModel.js";
 import { PrismaClientSingleton } from "../utils/PrismaClient.js";
 import { Prisma } from "@prisma/client";
 
@@ -6,7 +6,7 @@ class CarModel implements ICarModel {
 
     constructor() { }
 
-    async registerCar(car: InsertCar): Promise<SelectCar | any> {
+    async registerCar(car: InsertCar): Promise<SelectCar | string> {
         try {
             const db = await PrismaClientSingleton.getInstance().$connect().then(() => PrismaClientSingleton.getInstance());
             let newCar = await db.car.create({
@@ -18,12 +18,11 @@ class CarModel implements ICarModel {
             if (e instanceof Prisma.PrismaClientKnownRequestError) {
                 switch (e.code) {
                     case 'P2002':
-                        console.error('Error: There is a unique constraint violation');
-                        break;
+                        return 'Error: There is a unique constraint violation';
                 }
             }
+            return 'Error: An unexpected error occurred';
         }
-
     }
 
 }
