@@ -1,6 +1,6 @@
 import ICarModel, { InsertCar, SelectCar } from "../interfaces/car/ICarModel.js";
 import { PrismaClientSingleton } from "../db/PrismaClient.js";
-import { Prisma } from "@prisma/client";
+import { CarCategory, Prisma } from "@prisma/client";
 
 class CarModel implements ICarModel {
 
@@ -29,6 +29,19 @@ class CarModel implements ICarModel {
         try {
             const db = await PrismaClientSingleton.getInstance().$connect().then(() => PrismaClientSingleton.getInstance());
             const cars = await db.car.findMany();
+            db.$disconnect();
+            return cars;
+        } catch (e: any) {
+            return e.message;
+        }
+    }
+
+    async getCarsByCategory(category: CarCategory): Promise<SelectCar[]> {
+        try {
+            const db = await PrismaClientSingleton.getInstance().$connect().then(() => PrismaClientSingleton.getInstance());
+            const cars = await db.car.findMany({
+                where: { category }
+            });
             db.$disconnect();
             return cars;
         } catch (e: any) {

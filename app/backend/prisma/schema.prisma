@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,24 +7,24 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum CarCategory {
-  COMPACT_HATCH @map("Compact Hatch")
-  MEDIUM_HATCH @map("Medium Hatch")
-  SEDAN @map("Sedan")
-  VAN @map("Van")
-  PICKUP @map("Pickup")
-}
-
 model Car {
-  id Int @id @default(autoincrement())
-  manufacturer String 
-  model String 
-  modelYear Int @map("model_year")
-  rentWeekdayPrice Float @map("rent_weekday_price")
-  rentWeekendPrice Float @map("rent_weekend_price")
-  rentWeekdayPriceLoyalty Float @map("rent_weekday_price_loyalty")
-  rentWeekendPriceLoyalty Float @map("rent_weekend_price_loyalty")
-  category CarCategory 
+  id                      Int         @id @default(autoincrement())
+  manufacturer            String
+  model                   String
+  modelYear               Int         @map("model_year")
+  category                CarCategory
+  rentWeekdayPrice        Float       @map("rent_weekday_price")
+  rentWeekdayPriceLoyalty Float       @map("rent_weekday_price_loyalty")
+  rentWeekendPrice        Float       @map("rent_weekend_price")
+  rentWeekendPriceLoyalty Float       @map("rent_weekend_price_loyalty")
 
   @@unique([model, modelYear])
+}
+
+enum CarCategory {
+  COMPACT_HATCH @map("Compact Hatch")
+  MEDIUM_HATCH  @map("Medium Hatch")
+  SEDAN         @map("Sedan")
+  VAN           @map("Van")
+  PICKUP        @map("Pickup")
 }
