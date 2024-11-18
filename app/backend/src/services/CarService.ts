@@ -1,6 +1,7 @@
 import ICarModel, { InsertCar, SelectCar } from "../interfaces/car/ICarModel.js";
 import ICarService from "../interfaces/car/ICarService.js";
 import { ServiceResponse } from "../interfaces/ServiceResponse.js";
+import mapCarCategory from "../utils/mapCarCategory.js";
 
 class CarService implements ICarService {
     private carModel: ICarModel;

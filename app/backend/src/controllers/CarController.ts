@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import ICarController from "../interfaces/car/ICarController.js";
 import ICarService from "../interfaces/car/ICarService.js";
 import mapStatusHTTP from "../utils/mapStatusHTTP.js";
+import mapCarCategory from "../utils/mapCarCategory.js";
 
 class CarController implements ICarController {
     private carService: ICarService;
@@ -12,6 +13,7 @@ class CarController implements ICarController {
 
     public async createCar(req: Request, res: Response): Promise<Response> {
         try {
+            req.body.category = mapCarCategory(req.body.category);
             const { data, status } = await this.carService.createCar(req.body);
             return res.status(mapStatusHTTP(status)).json(data);
         } catch (error: any) {
