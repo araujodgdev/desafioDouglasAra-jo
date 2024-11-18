@@ -20,8 +20,14 @@ enum CarCategory {
 
 model Car {
   id Int @id @default(autoincrement())
-  manufacturer String
-  model String
+  manufacturer String 
+  model String 
   modelYear Int @map("model_year")
+  rentWeekdayPrice Float @map("rent_weekday_price")
+  rentWeekendPrice Float @map("rent_weekend_price")
+  rentWeekdayPriceLoyalty Float @map("rent_weekday_price_loyalty")
+  rentWeekendPriceLoyalty Float @map("rent_weekend_price_loyalty")
   category CarCategory 
+
+  @@unique([model, modelYear])
 }
