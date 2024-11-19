@@ -1,14 +1,26 @@
 services:
+  frontend:
+    container_name: app_frontend
+    build: ./frontend
+    working_dir: /app-frontend
+    ports:
+      - 5173:5173
+    volumes:
+      - ./frontend:/app-frontend
+      - /app-frontend/node_modules
+    networks:
+      - default
+    depends_on:
+      - backend
   backend:
     container_name: app_backend
     build: ./backend
     working_dir: /app-backend
     ports:
-      - 8080:8080
+      - 3001:3001
     volumes:
       - ./backend:/app-backend
     environment:
-      - PORT=8080
       - DATABASE_URL=postgresql://app:app@app_db:5432/app
     depends_on:
       - db

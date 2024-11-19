@@ -10,31 +10,37 @@ const carService = new CarService(carModel);
 const carController = new CarController(carService);
 
 carRouter.post(
-  "/", 
+  "/",
   (req: Request, res: Response): void => {
     carController.createCar(req, res);
   }
 );
 
 carRouter.get(
-  "/", 
+  "/",
   (req: Request, res: Response): void => {
     carController.getCars(req, res);
   }
 );
 
 carRouter.delete(
-  "/:id", 
+  "/:id",
   (req: Request, res: Response): void => {
     carController.removeCar(req, res);
   }
 );
 
 carRouter.get(
-  "/category/:category", 
+  "/filter",
   (req: Request, res: Response): void => {
     carController.getCarsByCategory(req, res);
   }
 );
+
+carRouter.post(
+  '/cheapest',
+  (req: Request, res: Response): void => {
+  carController.findCheapestCar(req, res);
+});
 
 export { carRouter };

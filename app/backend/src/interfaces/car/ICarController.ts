@@ -5,4 +5,5 @@ export default interface ICarController {
     getCars: (req: Request, res: Response) => Promise<Response>;
     getCarsByCategory: (req: Request, res: Response) => Promise<Response>;
     removeCar: (req: Request, res: Response) => Promise<Response>;
+    findCheapestCar: (req: Request, res: Response) => Promise<Response>;
 }

@@ -7,19 +7,27 @@
           <v-select
             v-model="selectedCategory"
             :items="categories"
-            item-text="text"
+            item-title="text"
             item-value="value"
             label="Filtrar por Categoria"
-            @change="fetchCars"
+            @update:modelValue="fetchCars"
           ></v-select>
         </v-col>
       </v-row>
 
-      <v-data-table
-        :headers="headers"
-        :items="cars"
-        class="elevation-1"
-      >
+      <v-data-table :headers="headers" :items="cars" class="elevation-1">
+        <template #item.rentWeekdayPrice="{ item }">
+          {{ formatCurrency(item.rentWeekdayPrice) }}
+        </template>
+        <template #item.rentWeekendPrice="{ item }">
+          {{ formatCurrency(item.rentWeekendPrice) }}
+        </template>
+        <template #item.rentWeekdayPriceLoyalty="{ item }">
+          {{ formatCurrency(item.rentWeekdayPriceLoyalty) }}
+        </template>
+        <template #item.rentWeekendPriceLoyalty="{ item }">
+          {{ formatCurrency(item.rentWeekendPriceLoyalty) }}
+        </template>
         <template #item.actions="{ item }">
           <v-btn icon @click="removeCar(item.id)">
             <v-icon color="red">mdi-delete</v-icon>
@@ -32,14 +40,18 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import axios from 'axios';
+import axios from '../axios';
 
 interface Car {
   id: number;
   manufacturer: string;
   model: string;
   modelYear: number;
-  category: number;
+  category: string;
+  rentWeekdayPrice: number;
+  rentWeekendPrice: number;
+  rentWeekdayPriceLoyalty: number;
+  rentWeekendPriceLoyalty: number;
 }
 
 interface Category {
@@ -62,11 +74,21 @@ export default defineComponent({
         { value: 5, text: 'Pickup' },
       ] as Category[],
       headers: [
-        { text: 'Fabricante', value: 'manufacturer' },
-        { text: 'Modelo', value: 'model' },
-        { text: 'Ano', value: 'modelYear' },
-        { text: 'Categoria', value: 'categoryText' },
-        { text: 'Ações', value: 'actions', sortable: false },
+        { title: 'Fabricante', value: 'manufacturer' },
+        { title: 'Modelo', value: 'model' },
+        { title: 'Ano', value: 'modelYear' },
+        { title: 'Categoria', value: 'category' },
+        { title: 'Preço Dia de Semana', value: 'rentWeekdayPrice' },
+        { title: 'Preço Fim de Semana', value: 'rentWeekendPrice' },
+        {
+          title: 'Preço Dia de Semana (Fidelidade)',
+          value: 'rentWeekdayPriceLoyalty',
+        },
+        {
+          title: 'Preço Fim de Semana (Fidelidade)',
+          value: 'rentWeekendPriceLoyalty',
+        },
+        { title: 'Ações', value: 'actions', sortable: false },
       ],
     };
   },
@@ -74,12 +96,12 @@ export default defineComponent({
     fetchCars() {
       let url = '/api/cars';
       if (this.selectedCategory) {
-        url += `?category=${this.selectedCategory}`;
+        url += `/filter?category=${this.selectedCategory}`;
       }
       axios.get(url).then((response) => {
         this.cars = response.data.map((car: Car) => ({
           ...car,
-          categoryText: this.getCategoryText(car.category),
+          categoryText: car.category.toString().split('_').join(' '),
         }));
       });
     },
@@ -88,9 +110,11 @@ export default defineComponent({
         this.fetchCars();
       });
     },
-    getCategoryText(value: number) {
-      const category = this.categories.find((cat) => cat.value === value);
-      return category ? category.text : 'Desconhecida';
+    formatCurrency(value: number) {
+      return new Intl.NumberFormat('pt-BR', {
+        style: 'currency',
+        currency: 'BRL',
+      }).format(value);
     },
   },
   mounted() {
