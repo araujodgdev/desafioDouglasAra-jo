@@ -69,7 +69,7 @@ Este é um projeto desenvolvido para gerenciar o aluguel de carros, permitindo c
 2. **Navegue até o diretório do backend:**
 
    ```bash
-   cd seu-repositorio/backend
+   cd app/backend
    ```
 
 3. **Configuração do Banco de Dados:**
